@@ -29,7 +29,7 @@ PROGRAM ejercicio18
    !opero
    
    !valores iniciales
-   posicion_inicial(1:2) = (/0., 100./)
+   posicion_inicial(1:2) = (/0., 150./)
    velocidad_inicial(1:2) = (/5., 5./)
    paso_del_tiempo = 1.
    gravedad = -9.81

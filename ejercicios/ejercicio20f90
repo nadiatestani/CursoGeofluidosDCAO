@@ -1,0 +1,23 @@
+PROGRAM ejercicio20
+!
+
+IMPLICIT NONE
+
+
+
+END PROGRAM 
+
+
+
+!to open a file without knowing the amount of rows
+
+
+OPEN(9, 'archivo.dat', STATUS='old')
+  DO i=1, 10000
+    READ(9,*,END=100)valor1, valor2, ....
+  END DO
+100 CONTINUE
+  CLOSE(9)
+  
+  
+!END hace que te ponga el ultimo valor leido en el lugar 100, y despues con CONTINUE sale del bucle en el 100, MAGIA
