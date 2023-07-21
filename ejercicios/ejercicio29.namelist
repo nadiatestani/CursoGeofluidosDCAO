@@ -1,0 +1,33 @@
+&dimensiones
+dimx = 100,
+dimy = 150,
+dimt = 12
+unidadtiempo = "hours"
+tiemporef = "1949-12-01 00:00:00"
+inilon = -85.
+endlon = -30.
+inilat = -60.
+endlat = 15.
+initiempo = 626865
+endtiempo = 627153
+
+/
+&variable
+nombre = "temperatura"
+nombreestandard = "Temperatura"
+nombrelargo = "TemperaturaEnSup"
+unidades = "K"
+
+/
+&atributosglob 
+autor = "Nadia Testani"
+institucion = "CIMA"
+pais = "Argentina"
+
+/
+&salida
+ficheronc = "ejercicio29.nc"
+
+/
+
+
