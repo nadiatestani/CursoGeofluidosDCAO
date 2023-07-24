@@ -37,10 +37,12 @@ PROGRAM ejercicio30
    CHARACTER(100)                            ::time_var
    INTEGER                              ::nc
    INTEGER                              ::n, m
+   REAL, DIMENSION(:), ALLOCATABLE      :: array1D_lon
+   REAL, DIMENSION(:), ALLOCATABLE      :: array1D_lat
    
    !genero archivo netcdf
    ficheronc = "ejercicio30.nc"
-   nc = nf90_create(ficheronc, 0, ide_nc) !creo archivo, 0 es el TIPO: NF90_CLOBBER
+   nc = nf90_create(ficheronc, NF90_NETCDF4, ide_nc) !Para poder mezclar definciones con relleno de archivo se usa formato NF90_NETCDF4
    
    !seteo atributos globales
    nc = nf90_put_att(ide_nc, NF90_GLOBAL, "Autor", "Nadia Testani")
@@ -78,21 +80,34 @@ PROGRAM ejercicio30
      nc = nf90_def_dim(ide_nc, "tiempo" , 1, ide_time) 
    
      !seteo variables
-     nc = nf90_def_var(ide_nc, "longitud", 0, ide_lon, ide_lon_var)  !0 = NF90_CLOBBER _var
-     nc = nf90_def_var(ide_nc, "longitud", 0, ide_lat, ide_lon_var) 
-     nc = nf90_def_var(ide_nc, "tiempo", 0, ide_time, ide_time_var) 
-     nc = nf90_def_var(ide_nc, nombre_variable(varcode), 0, (/ide_lon, ide_lat, ide_time/), ide_var)    
+     nc = nf90_def_var(ide_nc, "longitud", nf90_real, (/ ide_lon /), ide_lon_var)  !use nf90_real to define the variables
+     nc = nf90_def_var(ide_nc, "latitud", nf90_real, (/ ide_lat /), ide_lat_var) 
+     nc = nf90_def_var(ide_nc, "tiempo", nf90_real, (/ ide_time /), ide_time_var) 
+     nc = nf90_def_var(ide_nc, nombre_variable(varcode), nf90_real, (/ide_lon, ide_lat, ide_time/), ide_var)    
    
      !seteo atributos de las dimensiones
      nc = nf90_put_att(ide_nc, ide_lon_var, "Unit", "degrees_east") 
      nc = nf90_put_att(ide_nc, ide_lat_var, "Unit", "degrees_north") 
      nc = nf90_put_att(ide_nc, ide_time_var, "Unit", "YYYY/MM/DD")
-   
+     nc = nf90_put_att(ide_nc, ide_var, "Unit", units)
+     
      !valores a las variables
      !le pongo valores a la variable
      time_var = "1996/09/03"
-     nc = nf90_put_var(ide_nc, ide_lon_var, [(REAL(1) + REAL(m-1), m=1,dimx)])
-     nc = nf90_put_var(ide_nc, ide_lat_var, [(REAL(1) + REAL(n-1), n=1,dimy)])
+     !armo vectores de lon y lats
+     IF (ALLOCATED(array1D_lon)) DEALLOCATE(array1D_lon)
+     ALLOCATE(array1D_lon(dimx))
+     IF (ALLOCATED(array1D_lat)) DEALLOCATE(array1D_lat)
+     ALLOCATE(array1D_lat(dimy))
+     DO m = 1, dimx
+       array1D_lon(m) = REAL(m)
+     END DO
+     DO n = 1, dimy
+      array1D_lat(n) = REAL(n)
+     END DO
+     
+     nc = nf90_put_var(ide_nc, ide_lon_var, array1D_lon)
+     nc = nf90_put_var(ide_nc, ide_lat_var, array1D_lat)
      nc = nf90_put_var(ide_nc, ide_time_var, time_var)
      nc = nf90_put_var(ide_nc, ide_var, matriz(:,:))
       
